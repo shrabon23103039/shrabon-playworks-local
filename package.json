@@ -31,5 +31,9 @@
   "allowScripts": {
     "argon2@0.45.2": true,
     "esbuild@0.28.2": true
+  },
+  "dependencies": {
+    "@neon/config": "^1.14.8",
+    "@neon/env": "^2.1.11"
   }
 }
