@@ -1,0 +1,21 @@
+# Shrabon Playworks — Cursor Rules
+
+Read `CLAUDE.md`, `docs/01_PRD.md`–`docs/06_Plan.md`, and relevant security/schema/API/deployment/governance/ADR/testing/execution docs before work.
+
+Current status: documentation only; implementation not authorized.
+
+MVP: original HTML5 games; one private admin; no public player accounts; authenticated-admin-only draft preview; dedicated isolated game origin; local favorites; no persistent visitor ID/fingerprinting; raw analytics max 90 days; contact message bodies/attachments never persisted in app DB/logs.
+
+Custom domain is deferred. Provider shortlist is conditional. Exact dependency versions require verification. Do not provision/spend/deploy without separate owner approval.
+
+Follow `06_Plan.md` in dependency order. Update it after each completed task and update `EXECUTION_STATE.md` after meaningful progress/blockers. Update ADRs and affected docs when architecture changes. Never fabricate test results or bypass security gates.
+
+
+Localization requirement: English and Bangla UI are approved for MVP. Preserve translation-key architecture, UTF-8, Bangla-capable font coverage, and bilingual testing. Do not assume the default language; ask the owner. Do not silently omit translated loading/empty/error/success states or admin UI.
+
+
+For an explicitly authorized autonomous implementation run, follow `docs/AUTONOMOUS_IMPLEMENTATION.md` in addition to these rules. It does not override owner authorization, security requirements, or spending/provisioning restrictions.
+
+
+## Current owner authorization
+The owner has explicitly authorized autonomous implementation of the Shrabon Playworks MVP, selection of recommended low-cost/free defaults, and public publication on a verified no-cost hosting path after all release gates pass. Follow `docs/AUTONOMOUS_IMPLEMENTATION.md`. Do not spend money, enter payment details, purchase a domain, or bypass provider account verification. If a genuine owner-only external action blocks publication, finish independent work and report the exact blocker.

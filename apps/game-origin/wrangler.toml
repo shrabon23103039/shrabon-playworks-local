@@ -1,0 +1,10 @@
+name = "shrabon-playworks-games"
+compatibility_date = "2026-11-09"
+pages_build_output_dir = "./public"
+
+[[r2_buckets]]
+binding = "GAME_ASSETS"
+bucket_name = "shrabon-playworks-game-assets"
+
+[vars]
+MAIN_SITE_ORIGIN = "https://replace-before-deploy.invalid"

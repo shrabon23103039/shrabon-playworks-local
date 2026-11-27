@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Orbit Memory — Shrabon Playworks</title>
+    <link rel="stylesheet" href="/games/game.css">
+    <script src="/games/orbit-memory/game.js" defer></script>
+  </head>
+  <body>
+    <main class="game-shell memory-shell">
+      <header class="game-header">
+        <p class="eyebrow">SHRABON PLAYWORKS · PUZZLE</p>
+        <h1 id="game-title">Orbit Memory</h1>
+        <p id="game-help" class="help">Select two cards to reveal them. Match every pair to finish.</p>
+      </header>
+      <section class="memory-board" id="board" aria-label="Memory card board"></section>
+      <footer class="game-footer">
+        <span><span id="moves-label">MOVES</span> <strong id="moves">0</strong></span>
+        <span><span id="pairs-label">PAIRS</span> <strong id="pairs">0 / 6</strong></span>
+        <button id="restart" class="quiet-button" type="button">Restart</button>
+      </footer>
+      <p id="message" class="game-message" aria-live="polite"></p>
+    </main>
+  </body>
+</html>

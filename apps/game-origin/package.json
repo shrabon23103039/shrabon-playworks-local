@@ -1,0 +1,18 @@
+{
+  "name": "@playworks/game-origin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler pages functions build functions --outdir=dist",
+    "dev": "wrangler pages dev public --port 8789",
+    "deploy": "wrangler pages deploy public --project-name=shrabon-playworks-games",
+    "lint": "eslint functions src test",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "eslint": "10.14.0",
+    "wrangler": "4.160.0"
+  }
+}

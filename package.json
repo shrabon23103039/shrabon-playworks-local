@@ -1,0 +1,35 @@
+{
+  "name": "shrabon-playworks",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/games",
+    "apps/game-origin",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,games,web -c yellow,green,cyan \"npm:dev:api\" \"npm:dev:games\" \"npm:dev:web\"",
+    "dev:api": "npm run dev --workspace @playworks/api",
+    "dev:games": "npm run dev --workspace @playworks/games",
+    "dev:web": "npm run dev --workspace @playworks/web",
+    "build": "npm run build --workspace @playworks/api && npm run build --workspace @playworks/games && npm run build --workspace @playworks/game-origin && npm run build --workspace @playworks/web",
+    "lint": "npm run lint --workspace @playworks/api && npm run lint --workspace @playworks/games && npm run lint --workspace @playworks/game-origin && npm run lint --workspace @playworks/web",
+    "typecheck": "npm run typecheck --workspace @playworks/api && npm run typecheck --workspace @playworks/games && npm run typecheck --workspace @playworks/game-origin && npm run typecheck --workspace @playworks/web",
+    "test": "npm run test --workspace @playworks/api && npm run test --workspace @playworks/game-origin && npm run test --workspace @playworks/web",
+    "admin:bootstrap": "npm run admin:bootstrap --workspace @playworks/api",
+    "db:migrate": "npm run db:migrate --workspace @playworks/api",
+    "db:seed": "npm run db:seed --workspace @playworks/api"
+  },
+  "devDependencies": {
+    "concurrently": "9.2.5",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "minimatch@10.2.6": "11.0.6"
+  },
+  "allowScripts": {
+    "argon2@0.45.2": true,
+    "esbuild@0.28.2": true
+  }
+}
