@@ -12,7 +12,7 @@ export function getPool(): Pool {
     connectionString,
     max: Number(process.env.DB_POOL_MAX ?? 5),
     idleTimeoutMillis: 10_000,
-    connectionTimeoutMillis: 5_000,
+    connectionTimeoutMillis: Number(process.env.DB_CONNECT_TIMEOUT_MS ?? 10_000),
     ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : undefined,
   });
   return pool;
