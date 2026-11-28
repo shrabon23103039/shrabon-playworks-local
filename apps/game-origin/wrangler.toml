@@ -2,9 +2,11 @@ name = "shrabon-playworks-games"
 compatibility_date = "2026-11-09"
 pages_build_output_dir = "./public"
 
-[[r2_buckets]]
-binding = "GAME_ASSETS"
-bucket_name = "shrabon-playworks-game-assets"
+# R2 bucket binding disabled for the built-in-games-only public demo (no R2 bucket provisioned).
+# Pages Functions (/packages/* and /preview/*) fail closed with HTTP 503 when GAME_ASSETS is unset.
+# [[r2_buckets]]
+# binding = "GAME_ASSETS"
+# bucket_name = "shrabon-playworks-game-assets"
 
 [vars]
-MAIN_SITE_ORIGIN = "https://replace-before-deploy.invalid"
+MAIN_SITE_ORIGIN = "https://shrabon-playworks-web.otp-bridge.workers.dev"

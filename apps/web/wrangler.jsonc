@@ -9,8 +9,8 @@
     "binding": "ASSETS"
   },
   "vars": {
-    "API_INTERNAL_ORIGIN": "https://replace-api-origin.invalid",
-    "NEXT_PUBLIC_SITE_ORIGIN": "https://replace-site-origin.invalid",
-    "NEXT_PUBLIC_GAME_ORIGIN": "https://replace-game-origin.invalid"
+    "API_INTERNAL_ORIGIN": "https://shrabon-playworks-api.onrender.com",
+    "NEXT_PUBLIC_SITE_ORIGIN": "https://shrabon-playworks-web.otp-bridge.workers.dev",
+    "NEXT_PUBLIC_GAME_ORIGIN": "https://shrabon-playworks-games.pages.dev"
   }
 }
