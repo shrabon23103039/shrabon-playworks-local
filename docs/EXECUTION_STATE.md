@@ -19,6 +19,7 @@ Updated: 2026-11-27
 - Added S3 mock-server lifecycle, failure, and partial-publication recovery tests; game-origin origin-isolation/header tests; and a production preview-secret configuration test.
 - Officially rechecked current Cloudflare, Neon, Netlify, Vercel, and Render plan documentation. No provider account, bucket, production database, Git remote, or public deployment was created.
 - Rechecked local startup without changing application code, dependencies, configuration, or database contents. Workspace lint, typecheck, and build pass.
+- Hardened the Neon backup workflow after run `46123470549` failed while parsing `DATABASE_URL_UNPOOLED`; URI normalization and sanitized validation errors are implemented, but the remote secret's validity and a real backup/restore remain unverified.
 - Guarded startup and 24-hour analytics retention cleanup so both run only in production; development/test shutdown skips timer cleanup when no timer exists. Production query, cadence, and error handling remain unchanged.
 - Applied local migrations `001_initial.sql` and `002_game_assets.sql`, verified the resulting schema/migration records, seeded the two categories and two draft games, and started the API, game server, and web app for local development.
 - Bootstrapped exactly one local administrator after validating configuration and confirming the account table was empty. Verified the expected account exists without outputting its email or password.
