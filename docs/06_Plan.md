@@ -56,6 +56,7 @@
 - [x] Run authenticated API/game-origin integration coverage for the publishing lifecycle against an isolated temporary database (previous checkpoint).
 - [x] Verify local database migrations, seed data, and administrator bootstrap.
 - [x] Recheck official Cloudflare Pages/Workers/R2, Neon, Render, Netlify, and Vercel documentation.
+- [x] Harden the Neon backup workflow's connection-URI preflight after CI received a non-parseable secret value; remote credentials and restore remain unverified.
 - [ ] Verify non-destructive local end-to-end startup against an existing initialized database after the owner supplies a valid local `DATABASE_URL`; do not migrate or seed as part of this check.
 - [ ] Complete production secret scanning, accessibility/performance checks, backup configuration, and restore drill.
 - [ ] Select and verify a production-suitable provider topology, quotas, terms, and account eligibility.
