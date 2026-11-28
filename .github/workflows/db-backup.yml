@@ -1,0 +1,113 @@
+name: Neon PostgreSQL Daily Backup
+
+on:
+  schedule:
+    # Daily at 20:15 UTC (02:15 Asia/Dhaka) to avoid top-of-hour cron congestion
+    - cron: "15 20 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: neon-db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Dump and validate Neon PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Install PostgreSQL 18 client
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq curl ca-certificates gnupg lsb-release
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-18
+          pg_dump --version
+
+      - name: Create and validate compressed pg_dump backup
+        env:
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          if [ -z "${DATABASE_URL_UNPOOLED:-}" ]; then
+            echo "ERROR: DATABASE_URL_UNPOOLED secret is not configured." >&2
+            exit 1
+          fi
+
+          WORK_DIR="$(mktemp -d)"
+          echo "BACKUP_WORK_DIR=${WORK_DIR}" >> "${GITHUB_ENV}"
+
+          # Parse URI in Node without exposing credentials in shell arguments or process listings
+          node -e '
+            const fs = require("node:fs");
+            const u = new URL(process.env.DATABASE_URL_UNPOOLED);
+            if (!u.hostname || !u.pathname || u.pathname === "/") {
+              throw new Error("Invalid DATABASE_URL_UNPOOLED");
+            }
+            const lines = [
+              `export PGHOST=${JSON.stringify(u.hostname)}`,
+              `export PGPORT=${JSON.stringify(u.port || "5432")}`,
+              `export PGDATABASE=${JSON.stringify(decodeURIComponent(u.pathname.slice(1)))}`,
+              `export PGUSER=${JSON.stringify(decodeURIComponent(u.username))}`,
+              `export PGPASSWORD=${JSON.stringify(decodeURIComponent(u.password))}`,
+              `export PGSSLMODE="require"`,
+            ];
+            fs.writeFileSync(process.argv[1], lines.join("\n") + "\n", { mode: 0o600 });
+          ' "${WORK_DIR}/pg.env"
+
+          # shellcheck disable=SC1091
+          source "${WORK_DIR}/pg.env"
+          rm -f "${WORK_DIR}/pg.env"
+
+          TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+          BACKUP_FILE="${WORK_DIR}/playworks-${TIMESTAMP}.dump"
+          echo "BACKUP_FILE=${BACKUP_FILE}" >> "${GITHUB_ENV}"
+
+          pg_dump \
+            --format=custom \
+            --compress=9 \
+            --no-owner \
+            --no-acl \
+            --file="${BACKUP_FILE}"
+
+          unset PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD PGSSLMODE
+
+          if [ ! -s "${BACKUP_FILE}" ]; then
+            echo "ERROR: Backup file is missing or empty." >&2
+            exit 1
+          fi
+
+          pg_restore --list "${BACKUP_FILE}" > "${WORK_DIR}/toc.txt"
+          if [ ! -s "${WORK_DIR}/toc.txt" ]; then
+            echo "ERROR: Backup archive table of contents is empty." >&2
+            exit 1
+          fi
+
+          echo "Backup verified: $(basename "${BACKUP_FILE}") ($(wc -c < "${BACKUP_FILE}") bytes)"
+
+      - name: Upload private backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: neon-playworks-backup-${{ github.run_id }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Clean up temporary backup files
+        if: always()
+        run: |
+          if [ -n "${BACKUP_WORK_DIR:-}" ] && [ -d "${BACKUP_WORK_DIR}" ]; then
+            rm -rf "${BACKUP_WORK_DIR}"
+          fi
