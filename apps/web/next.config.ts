@@ -1,12 +1,19 @@
 import type { NextConfig } from "next";
 import dotenv from "dotenv";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-dotenv.config({ path: resolve(process.cwd(), "../../.env") });
+const localEnvPath = resolve(process.cwd(), "../../.env");
+if (existsSync(localEnvPath)) {
+  dotenv.config({ path: localEnvPath });
+}
 
 const apiOrigin = process.env.API_INTERNAL_ORIGIN ?? "http://localhost:4000";
 
 const nextConfig: NextConfig = {
+  images: {
+    unoptimized: true,
+  },
   async rewrites() {
     return [
       {

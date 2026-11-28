@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Meteor Dash — Shrabon Playworks</title>
+    <link rel="stylesheet" href="/games/game.css">
+    <script src="/games/meteor-dash/game.js" defer></script>
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="game-header">
+        <p class="eyebrow">SHRABON PLAYWORKS · ARCADE</p>
+        <h1 id="game-title">Meteor Dash</h1>
+        <p id="game-help" class="help">Move with ← → or A/D. On touch screens, drag left or right.</p>
+      </header>
+      <section class="arena" aria-label="Meteor Dash game">
+        <canvas id="arena" width="720" height="420" aria-label="Move the ship and avoid meteors"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="overlay-card">
+            <span class="star" aria-hidden="true">✦</span>
+            <h2 id="status-title">Ready, pilot?</h2>
+            <p id="status-copy">Dodge as long as you can.</p>
+            <button id="start" type="button">Start game</button>
+          </div>
+        </div>
+      </section>
+      <footer class="game-footer">
+        <span><span id="score-label">SCORE</span> <strong id="score">0</strong></span>
+        <span id="controls">← → / A D · DRAG</span>
+      </footer>
+    </main>
+  </body>
+</html>

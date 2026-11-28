@@ -8,7 +8,10 @@ const optionalValue = z.preprocess((value) => value === "" ? undefined : value, 
 
 const Environment = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+  API_PORT: z.preprocess(
+    (value) => value === undefined || value === "" ? (process.env.PORT || 4000) : value,
+    z.coerce.number().int().min(1).max(65535),
+  ),
   WEB_ORIGIN: z.string().url().default("http://localhost:3000").transform((value) => new URL(value).origin),
   DATABASE_URL: z.string().min(1),
   GAME_STORAGE_DRIVER: z.enum(["local", "s3"]).default("local"),

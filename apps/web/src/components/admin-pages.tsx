@@ -17,6 +17,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { adminRoutes } from "@/lib/admin-routes";
 import { adminMutationHeaders, apiRequest } from "@/lib/api";
 import { formatDisplayDate } from "@/lib/localization";
 import type { AdminIdentity, Category, Game, Locale } from "@/lib/types";
@@ -99,7 +100,7 @@ function AdminChrome({ children }: { children: ReactNode }) {
         method: "DELETE",
         headers: adminMutationHeaders(),
       });
-      router.replace("/admin/login");
+      router.replace(adminRoutes.login());
     } catch {
       setError(true);
     }
@@ -110,7 +111,7 @@ function AdminChrome({ children }: { children: ReactNode }) {
       <header className="admin-header">
         <div className="admin-header-inner">
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            <Link className="brand" href="/admin">
+            <Link className="brand" href={adminRoutes.dashboard()}>
               <span className="brand-mark"><ShieldCheck size={18} aria-hidden="true" /></span>
               <span className="brand-copy">
                 <strong>{t("brand")}</strong>
@@ -118,20 +119,20 @@ function AdminChrome({ children }: { children: ReactNode }) {
               </span>
             </Link>
             <nav className="admin-nav" aria-label={t("adminTitle")}>
-              <Link aria-current={pathname === "/admin" ? "page" : undefined} href="/admin">
+              <Link aria-current={pathname === adminRoutes.dashboard() ? "page" : undefined} href={adminRoutes.dashboard()}>
                 <LayoutDashboard size={15} aria-hidden="true" />
                 <span>{t("adminOverview")}</span>
               </Link>
               <Link
-                aria-current={pathname === "/admin/games" ? "page" : undefined}
-                href="/admin/games"
+                aria-current={pathname === adminRoutes.games() ? "page" : undefined}
+                href={adminRoutes.games()}
               >
                 <List size={15} aria-hidden="true" />
                 <span>{t("adminGames")}</span>
               </Link>
               <Link
-                aria-current={pathname === "/admin/games/new" ? "page" : undefined}
-                href="/admin/games/new"
+                aria-current={pathname === adminRoutes.newGame() ? "page" : undefined}
+                href={adminRoutes.newGame()}
               >
                 <Plus size={15} aria-hidden="true" />
                 <span>{t("createGame")}</span>
@@ -152,15 +153,15 @@ function AdminChrome({ children }: { children: ReactNode }) {
           </div>
         </div>
         <nav className="admin-nav-mobile" aria-label={t("adminTitle")}>
-          <Link aria-current={pathname === "/admin" ? "page" : undefined} href="/admin">
+          <Link aria-current={pathname === adminRoutes.dashboard() ? "page" : undefined} href={adminRoutes.dashboard()}>
             <LayoutDashboard size={14} aria-hidden="true" />
             <span>{t("adminOverview")}</span>
           </Link>
-          <Link aria-current={pathname === "/admin/games" ? "page" : undefined} href="/admin/games">
+          <Link aria-current={pathname === adminRoutes.games() ? "page" : undefined} href={adminRoutes.games()}>
             <List size={14} aria-hidden="true" />
             <span>{t("adminGames")}</span>
           </Link>
-          <Link aria-current={pathname === "/admin/games/new" ? "page" : undefined} href="/admin/games/new">
+          <Link aria-current={pathname === adminRoutes.newGame() ? "page" : undefined} href={adminRoutes.newGame()}>
             <Plus size={14} aria-hidden="true" />
             <span>{t("createGame")}</span>
           </Link>
@@ -193,7 +194,7 @@ function AdminGuard({ children }: { children: (identity: AdminIdentity) => React
       .catch(() => {
         if (active) {
           setError(true);
-          router.replace("/admin/login");
+          router.replace(adminRoutes.login());
         }
       });
     return () => {
@@ -227,7 +228,7 @@ export function AdminLoginPage() {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
-      router.replace("/admin");
+      router.replace(adminRoutes.dashboard());
     } catch {
       setStatus("error");
     } finally {
@@ -340,11 +341,11 @@ function AdminDashboardContent({ identity }: { identity: AdminIdentity }) {
           </p>
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Link className="button button-secondary" href="/admin/games">
+          <Link className="button button-secondary" href={adminRoutes.games()}>
             <List size={15} aria-hidden="true" />
             <span>{t("adminGames")}</span>
           </Link>
-          <Link className="button button-primary" href="/admin/games/new">
+          <Link className="button button-primary" href={adminRoutes.newGame()}>
             <Plus size={15} aria-hidden="true" />
             <span>{t("createGame")}</span>
           </Link>
@@ -378,7 +379,7 @@ function AdminDashboardContent({ identity }: { identity: AdminIdentity }) {
             <h2 style={{ margin: 0 }}>{t("manageGames")}</h2>
             <p className="admin-subtitle" style={{ margin: "4px 0 0" }}>{t("adminDashboardSubtitle")}</p>
           </div>
-          <Link className="text-link" href="/admin/games">
+          <Link className="text-link" href={adminRoutes.games()}>
             <span>{t("seeAll")}</span>
             <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
@@ -407,9 +408,9 @@ function AdminDashboardContent({ identity }: { identity: AdminIdentity }) {
                   <td>{formatDisplayDate(game.updatedAt, locale)}</td>
                   <td>
                     <div className="row-actions">
-                      <Link href={`/admin/games/${game.id}/edit`}>{t("edit")}</Link>
-                      <Link href={`/admin/games/${game.id}/preview`}>{t("preview")}</Link>
-                      <Link href={`/admin/games/${game.id}/revisions`}>{t("revisions")}</Link>
+                      <Link href={adminRoutes.editGame(game.id)}>{t("edit")}</Link>
+                      <Link href={adminRoutes.previewGame(game.id)}>{t("preview")}</Link>
+                      <Link href={adminRoutes.revisions(game.id)}>{t("revisions")}</Link>
                     </div>
                   </td>
                 </tr>
@@ -474,7 +475,7 @@ function AdminGamesContent() {
           <h1 className="admin-heading">{t("adminGames")}</h1>
           <p className="admin-subtitle" style={{ marginBottom: 0 }}>{t("adminDashboardSubtitle")}</p>
         </div>
-        <Link className="button button-primary" href="/admin/games/new">
+        <Link className="button button-primary" href={adminRoutes.newGame()}>
           <Plus size={16} aria-hidden="true" />
           <span>{t("createGame")}</span>
         </Link>
@@ -531,9 +532,9 @@ function AdminGamesContent() {
                   <td>{formatDisplayDate(game.updatedAt, locale)}</td>
                   <td>
                     <div className="row-actions">
-                      <Link href={`/admin/games/${game.id}/edit`}>{t("edit")}</Link>
-                      <Link href={`/admin/games/${game.id}/preview`}>{t("preview")}</Link>
-                      <Link href={`/admin/games/${game.id}/revisions`}>{t("revisions")}</Link>
+                      <Link href={adminRoutes.editGame(game.id)}>{t("edit")}</Link>
+                      <Link href={adminRoutes.previewGame(game.id)}>{t("preview")}</Link>
+                      <Link href={adminRoutes.revisions(game.id)}>{t("revisions")}</Link>
                     </div>
                   </td>
                 </tr>
@@ -631,7 +632,7 @@ function GameEditorContent({ gameId }: { gameId?: string }) {
       setFeedback(t("saveSuccess"));
       setValidated(false);
       if (isNew && id && navigateAfterSave) {
-        router.replace(`/admin/games/${id}/edit`);
+        router.replace(adminRoutes.editGame(id));
         return id;
       }
       return id;
@@ -652,7 +653,7 @@ function GameEditorContent({ gameId }: { gameId?: string }) {
       await apiRequest(`/admin/games/${id}/validate`, { method: "POST", headers: adminMutationHeaders() });
       setValidated(true);
       setFeedback(t("validated"));
-      if (isNew) router.replace(`/admin/games/${id}/edit`);
+      if (isNew) router.replace(adminRoutes.editGame(id));
     } catch {
       setError(true);
       setFeedback(t("operationFailure"));
@@ -720,7 +721,7 @@ function GameEditorContent({ gameId }: { gameId?: string }) {
 
   return (
     <>
-      <Link className="breadcrumbs" href="/admin/games">
+      <Link className="breadcrumbs" href={adminRoutes.games()}>
         <ArrowLeft size={15} aria-hidden="true" />
         <span>{t("adminGames")}</span>
       </Link>
@@ -734,11 +735,11 @@ function GameEditorContent({ gameId }: { gameId?: string }) {
         </div>
         {gameId && (
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link className="button button-secondary button-sm" href={`/admin/games/${gameId}/preview`}>
+            <Link className="button button-secondary button-sm" href={adminRoutes.previewGame(gameId)}>
               <Eye size={14} aria-hidden="true" />
               <span>{t("preview")}</span>
             </Link>
-            <Link className="button button-secondary button-sm" href={`/admin/games/${gameId}/revisions`}>
+            <Link className="button button-secondary button-sm" href={adminRoutes.revisions(gameId)}>
               <History size={14} aria-hidden="true" />
               <span>{t("revisions")}</span>
             </Link>
@@ -971,7 +972,7 @@ function AdminPreviewContent({ gameId }: { gameId: string }) {
 
   return (
     <>
-      <Link className="breadcrumbs" href={`/admin/games/${gameId}/edit`}>
+      <Link className="breadcrumbs" href={adminRoutes.editGame(gameId)}>
         <ArrowLeft size={15} aria-hidden="true" />
         <span>{t("editGame")}</span>
       </Link>
@@ -1071,7 +1072,7 @@ function RevisionsContent({ gameId }: { gameId: string }) {
 
   return (
     <>
-      <Link className="breadcrumbs" href={`/admin/games/${gameId}/edit`}>
+      <Link className="breadcrumbs" href={adminRoutes.editGame(gameId)}>
         <ArrowLeft size={15} aria-hidden="true" />
         <span>{t("editGame")}</span>
       </Link>

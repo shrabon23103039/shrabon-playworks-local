@@ -1,0 +1,76 @@
+@font-face {
+  font-family: "Noto Sans Bengali";
+  src: url("/fonts/noto-sans-bengali-bengali-400-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: "Noto Sans Bengali", "Noto Sans", system-ui, sans-serif;
+  color: #f5f5fa;
+  background: #10111b;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 280px;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(16px, 4vw, 36px);
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgb(128 87 255 / 16%), transparent 38%),
+    radial-gradient(ellipse at 90% 95%, rgb(53 184 255 / 10%), transparent 34%),
+    #10111b;
+}
+
+button { font: inherit; }
+
+.game-shell {
+  width: min(100%, 880px);
+  margin: auto;
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid #30334b;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #191b2e, #141625 75%);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 35%);
+}
+
+.game-header { margin-bottom: 20px; }
+.eyebrow { margin: 0 0 8px; color: #8e78ff; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+h1 { margin: 0; font-size: clamp(26px, 5vw, 40px); letter-spacing: -.04em; }
+.help { margin: 8px 0 0; color: #a5a7ba; font-size: 14px; line-height: 1.65; }
+.arena { position: relative; overflow: hidden; border: 1px solid #30334b; border-radius: 16px; background: #10111b; }
+canvas { display: block; width: 100%; aspect-ratio: 12 / 7; }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(16 17 27 / 55%); }
+.overlay.hidden { display: none; }
+.overlay-card { max-width: 320px; text-align: center; }
+.star { color: #35b8ff; font-size: 30px; }
+.overlay h2 { margin: 6px 0; font-size: 24px; }
+.overlay p { margin: 0 0 18px; color: #a5a7ba; }
+.overlay button { border: 0; border-radius: 12px; padding: 12px 20px; color: #fff; background: #8057ff; font-weight: 800; cursor: pointer; }
+.overlay button:focus-visible, .quiet-button:focus-visible, .memory-card:focus-visible { outline: 3px solid #35b8ff; outline-offset: 3px; }
+.game-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; color: #a5a7ba; font-size: 12px; letter-spacing: .08em; }
+.game-footer strong { margin-left: 6px; color: #f5f5fa; font-size: 15px; letter-spacing: 0; }
+.memory-shell { max-width: 650px; }
+.memory-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 2vw, 14px); }
+.memory-card { min-height: clamp(58px, 12vw, 96px); border: 1px solid #393d5b; border-radius: 14px; color: #fff; background: linear-gradient(145deg, #252943, #191b2e); font-size: clamp(24px, 6vw, 40px); cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+.memory-card:hover { transform: translateY(-2px); border-color: #8057ff; }
+.memory-card.revealed, .memory-card.matched { border-color: #35b8ff; background: #22253b; }
+.memory-card.matched { box-shadow: inset 0 0 24px rgb(53 201 138 / 12%); }
+.memory-card:disabled { cursor: default; }
+.quiet-button { padding: 8px 12px; border: 1px solid #393d5b; border-radius: 10px; color: #f5f5fa; background: #22253b; cursor: pointer; }
+.game-message { min-height: 24px; margin: 14px 0 0; color: #35c98a; text-align: center; }
+
+@media (max-width: 440px) {
+  .game-shell { border-radius: 18px; }
+  .game-footer { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

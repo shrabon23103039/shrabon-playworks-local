@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shrabon-playworks-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "API_INTERNAL_ORIGIN": "https://shrabon-playworks-api.onrender.com",
+    "NEXT_PUBLIC_SITE_ORIGIN": "https://shrabon-playworks-web.otp-bridge.workers.dev",
+    "NEXT_PUBLIC_GAME_ORIGIN": "https://shrabon-playworks-games.pages.dev"
+  }
+}

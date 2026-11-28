@@ -20,3 +20,4 @@ apps/games/data/
 *.log
 .DS_Store
 Thumbs.db
+.neon

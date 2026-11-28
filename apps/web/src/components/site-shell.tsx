@@ -51,7 +51,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href="/contact">{t("navContact")}</Link>
             <Link href="/privacy">{t("footerPrivacy")}</Link>
             <Link href="/terms">{t("footerTerms")}</Link>
-            <Link href="/admin/login">{t("footerAdmin")}</Link>
           </nav>
           <span className="copyright">© {new Date().getFullYear()} {t("brand")}</span>
         </div>
