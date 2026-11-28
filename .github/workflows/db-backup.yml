@@ -1,6 +1,9 @@
 name: Neon PostgreSQL Daily Backup
 
 on:
+  push:
+    branches:
+      - backup-test
   schedule:
     # Daily at 20:15 UTC (02:15 Asia/Dhaka) to avoid top-of-hour cron congestion
     - cron: "15 20 * * *"
