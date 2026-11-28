@@ -53,23 +53,57 @@ jobs:
           echo "BACKUP_WORK_DIR=${WORK_DIR}" >> "${GITHUB_ENV}"
 
           # Parse URI in Node without exposing credentials in shell arguments or process listings
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const u = new URL(process.env.DATABASE_URL_UNPOOLED);
-            if (!u.hostname || !u.pathname || u.pathname === "/") {
-              throw new Error("Invalid DATABASE_URL_UNPOOLED");
+            let connectionString = process.env.DATABASE_URL_UNPOOLED.trim();
+            connectionString = connectionString.replace(/^psql\s+/i, "");
+            const quote = connectionString[0];
+            if ((quote === String.fromCharCode(39) || quote === "\"") && connectionString.endsWith(quote)) {
+              connectionString = connectionString.slice(1, -1);
             }
+            if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(connectionString)) {
+              connectionString = `postgresql://${connectionString}`;
+            }
+
+            let u;
+            let database;
+            let username;
+            let password;
+            try {
+              u = new URL(connectionString);
+              if (!["postgres:", "postgresql:"].includes(u.protocol)) {
+                throw new Error();
+              }
+              database = decodeURIComponent(u.pathname.slice(1));
+              username = decodeURIComponent(u.username);
+              password = decodeURIComponent(u.password);
+            } catch {
+              console.error("ERROR: DATABASE_URL_UNPOOLED must be a PostgreSQL connection URI; URL-encode special characters in credentials.");
+              process.exit(1);
+            }
+
+            if (!u.hostname || !database) {
+              console.error("ERROR: DATABASE_URL_UNPOOLED must include a PostgreSQL host and database.");
+              process.exit(1);
+            }
+
+            const shellQuote = (value) => {
+              const q = String.fromCharCode(39);
+              return q + value.replaceAll(q, `${q}\\${q}${q}`) + q;
+            };
             const lines = [
-              `export PGHOST=${JSON.stringify(u.hostname)}`,
-              `export PGPORT=${JSON.stringify(u.port || "5432")}`,
-              `export PGDATABASE=${JSON.stringify(decodeURIComponent(u.pathname.slice(1)))}`,
-              `export PGUSER=${JSON.stringify(decodeURIComponent(u.username))}`,
-              `export PGPASSWORD=${JSON.stringify(decodeURIComponent(u.password))}`,
+              `export PGHOST=${shellQuote(u.hostname)}`,
+              `export PGPORT=${shellQuote(u.port || "5432")}`,
+              `export PGDATABASE=${shellQuote(database)}`,
+              `export PGUSER=${shellQuote(username)}`,
+              `export PGPASSWORD=${shellQuote(password)}`,
               `export PGSSLMODE="require"`,
             ];
             fs.writeFileSync(process.argv[1], lines.join("\n") + "\n", { mode: 0o600 });
           ' "${WORK_DIR}/pg.env"
 
+          echo "pg.env permissions: $(stat -c '%a' "${WORK_DIR}/pg.env")"
           # shellcheck disable=SC1091
           source "${WORK_DIR}/pg.env"
           rm -f "${WORK_DIR}/pg.env"
